@@ -1,6 +1,12 @@
+
 from functools import lru_cache
 from importlib import import_module
 from inspect import isclass
+from os.path import realpath
+from os.path import dirname
+
+
+BASE_DIR = realpath(dirname(__file__))
 
 
 def is_number(obj):

@@ -6,10 +6,13 @@
 	* https://mafayyaz.wordpress.com/2013/02/08/writing-simple-http-server-in-python-with-rest-and-json/
 """
 
+import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from re import search
 from socketserver import ThreadingMixIn
-import threading
+from sys import stdout
+from os.path import join
+from misc import BASE_DIR
 
 
 def get_args(url):
@@ -29,7 +32,7 @@ def serve_file(self, path, content_type):
 	self.send_response(200)
 	self.send_header('Content-Type', content_type)
 	self.end_headers()
-	with open(path, 'rb') as fh:
+	with open(join(BASE_DIR, 'view', path), 'rb') as fh:
 		self.wfile.write(fh.read())
 
 
@@ -47,10 +50,10 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
 		else:
 			self.send_response(200)
 			self.end_headers()
+		return
 		self.send_response(200)
 		self.send_header('Content-Type', 'application/json')
 		self.end_headers()
-		#image/png
 		self.wfile.write('hello there!')
 
 	def do_POST(self):
@@ -82,10 +85,10 @@ class SimpleHttpServer():
 		self.wait_for_thread()
 
 
-if __name__=='__main__':
-	server = SimpleHttpServer('localhost', 7199)
-	print('Server running...')
-	print('send a keyboard interrupt to stop (usually ctrl+C)')
+def run_server(host = 'localhost', port = 7199):
+	server = SimpleHttpServer(host, port)
+	stdout.write('Server running at\n\nhttp://{0:s}:{1:d}/\n\n'.format(host, port))
+	stdout.write('Open it in your browser to use the interface\nSend a keyboard interrupt to stop (usually ctrl+C).')
 	server.start()
 	try:
 		server.wait_for_thread()

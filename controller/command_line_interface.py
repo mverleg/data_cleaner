@@ -14,6 +14,7 @@ from os.path import exists
 from controller.apply_transforms import train_transforms, apply_transforms
 from controller.data_io import get_cols, get_array
 from controller.transform_io import load_operations, load_chain, save_chain, save_operations
+from view.interface_server import run_server
 
 parser = ArgumentParser(description = 'Reads operations from a json file and applies them to data row-by-row.')
 parser.add_argument('-w', '--interface', dest = 'interface', action = 'store_true', help = 'Start the web interface server.')
@@ -131,8 +132,7 @@ if args.do:
 	numpy_save(args.data_out, data)
 
 if args.interface:
-	stdout.write('\nVisit http://{0:s}:{1:d}/ in your browser to use the interface\n\n'.format(args.host, args.port))
-	print('laaaateeeer')
+	run_server(args.host, args.port)
 
 stdout.write('done\n')
 
