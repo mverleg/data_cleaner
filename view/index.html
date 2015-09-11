@@ -4,9 +4,9 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Data Cleaner</title>
+		<!-- favicon from http://www.freefavicon.com/freefavicons/objects/iconinfo/red-highlighter-152-190158.html -->
+		<link rel="shortcut icon" type="image/png" href="favicon.png"/>
 		<link rel="stylesheet" href="https://bootswatch.com/simplex/bootstrap.min.css">
-		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
-		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
 		<style>
 			.nav, .pagination, .carousel, .panel-title a
 			{
@@ -39,6 +39,29 @@
 							</span>
 						</div>
 					</form>
+					<ul class="nav navbar-nav">
+						<div ng-controller="infoModal">
+							<script type="text/ng-template" id="infoContent">
+								<div class="modal-header">
+									<h3 class="modal-title">Data cleaner</h3>
+								</div>
+								<div class="modal-body">
+									<p>
+										Data cleaner is a tool that helps cleaning up messy data matrices column-by-column. This is useful for example before applying machine learning algorithms. The cleanup operation can be learned on some data and re-applied later, and new data transformations can be added easily.
+									</p>
+									<ul>
+										<li>
+											Code: <a href="https://github.com/mverleg/data_cleaner/">github.com/mverleg/data_cleaner</a>
+										</li>
+									</ul>
+								</div>
+								<div class="modal-footer">
+									<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+								</div>
+							</script>
+							<li><a href="#"><span class="glyphicon glyphicon-info-sign" aria-hidden="false" ng-click="open()"></span></a></li>
+						</div>
+					</ul>
 				</div><!-- /.container-fluid -->
 			</nav>
 		</div>
@@ -126,6 +149,31 @@
 //				$scope.cancel = function () {
 //					$modalInstance.dismiss('cancel');
 //				};
+			});
+
+			/*
+				Info dialogue
+			 */
+			angular.module('infoModule', ['ngAnimate', 'ui.bootstrap']);
+
+			angular.module('infoModule').controller('allVarsModal', function ($scope, $modal, $log) {
+				$scope.open = function () {
+					var modalInstance = $modal.open({
+						animation: true,
+						templateUrl: 'infoContent',
+						controller: 'infoInstModal',
+						size: 'md'
+					});
+					modalInstance.result.then(function (selectedItem) {
+						$scope.selected = selectedItem;
+					});
+				};
+			});
+
+			angular.module('infoModule').controller('infoInstModal', function ($scope, $modalInstance, items) {
+				$scope.ok = function () {
+					$modalInstance.close($scope.selected.item);
+				};
 			});
 		</script>
 

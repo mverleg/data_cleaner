@@ -28,8 +28,10 @@ parser.add_argument('-c', '--cache', dest = 'cache', action = 'count', default =
 parser.add_argument('--transpose', dest = 'transpose', action = 'store_true', help = 'Transpose input (to make sure that the variables are the second dimension of input data).')
 parser.add_argument('-f', '--learn', dest = 'learn', action = 'store_true', help = 'Learn the operations in the transformations file on the input data. Also available through the interface.')
 parser.add_argument('-d', '--do', dest = 'do', action = 'store_true', help = 'Apply the operations in the transformations file on the input data. If --learn is specified, it happens before applying transformations.  Also available through the interface.')
+parser.add_argument('--host', dest = 'host', type = str, default = '127.0.0.1', help = 'Host IP or domain for the interface; defaults to 127.0.0.1 (localhost).')
+parser.add_argument('--port', dest = 'port', type = int, default = 7199, help = 'Host port for the interface; defaults to 7199.')
 #parser.add_argument('-s', '--save', dest = 'save', action = 'store_true', help = 'Save the data to --data_out after transformation (--do). Also available through the interface.')
-
+#todo: extra data transformations (comma-separated python import path)
 
 args = parser.parse_args()
 
@@ -129,6 +131,7 @@ if args.do:
 	numpy_save(args.data_out, data)
 
 if args.interface:
+	stdout.write('\nVisit http://{0:s}:{1:d}/ in your browser to use the interface\n\n'.format(args.host, args.port))
 	print('laaaateeeer')
 
 stdout.write('done\n')
