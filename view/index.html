@@ -13,6 +13,21 @@
 				/* needed by http://angular-ui.github.io/bootstrap/ */
 				cursor: pointer;
 			}
+
+			.list-columns
+			{
+				-webkit-column-count: 6;
+				-webkit-column-gap: 10px;
+				-moz-column-count: 6;
+				-moz-column-gap: 10px;
+				column-count: 6;
+				column-gap: 15px;
+			}
+
+			.main-row
+			{
+				min-height: 500px;
+			}
 		</style>
 	</head>
 	<body>
@@ -26,7 +41,30 @@
 
 					<!-- Collect the nav links, forms, and other content for toggling -->
 					<ul class="nav navbar-nav">
-						<li><a href="#"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> All</a></li>
+						<span ng-app="allItemsApp">
+							<span ng-controller="allItemsCtrl">
+								<script type="text/ng-template" id="allItemsContent">
+									<div class="modal-header">
+										<h3 class="modal-title">Choose a variable...</h3>
+									</div>
+									<div class="modal-body">
+										<ul class="list-columns">
+											<li ng-repeat="item in items">
+												<a href="#" ng-click="$event.preventDefault(); selected.item = item; ok();">{{ item }}</a>
+											</li>
+										</ul>
+									</div>
+									<div class="modal-footer">
+										Current variable: <strong>{{ selected.item }}</strong>
+										<!--<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>-->
+										<!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
+									</div>
+								</script>
+								<li type="button" class="btn" ng-click="$event.preventDefault(); open()"> <!--#todo: white -->
+									<a href="#"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> All</a>
+								</li>
+							</span>
+						</span>
 						<li><a href="#"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span> PrevName</a></li>
 						<li class="active"><a href="#"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> CurName <span class="sr-only">(current)</span></a></li>
 						<li><a href="#"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span> NextName</a></li>
@@ -39,35 +77,12 @@
 							</span>
 						</div>
 					</form>
-					<ul class="nav navbar-nav">
-						<div ng-controller="infoModal">
-							<script type="text/ng-template" id="infoContent">
-								<div class="modal-header">
-									<h3 class="modal-title">Data cleaner</h3>
-								</div>
-								<div class="modal-body">
-									<p>
-										Data cleaner is a tool that helps cleaning up messy data matrices column-by-column. This is useful for example before applying machine learning algorithms. The cleanup operation can be learned on some data and re-applied later, and new data transformations can be added easily.
-									</p>
-									<ul>
-										<li>
-											Code: <a href="https://github.com/mverleg/data_cleaner/">github.com/mverleg/data_cleaner</a>
-										</li>
-									</ul>
-								</div>
-								<div class="modal-footer">
-									<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-								</div>
-							</script>
-							<li><a href="#"><span class="glyphicon glyphicon-info-sign" aria-hidden="false" ng-click="open()"></span></a></li>
-						</div>
-					</ul>
 				</div><!-- /.container-fluid -->
 			</nav>
 		</div>
 
 		<div class="container">
-			<div class="row">
+			<div class="row main-row">
 				<div class="col-xs-12 col-md-5">plots</div>
 				<div class="col-xs-4  col-md-3">data info</div>
 				<div class="col-xs-4  col-md-2">chosen actions</div>
@@ -78,32 +93,9 @@
 			</div>
 		</div>
 
-		<div ng-controller="allVarsModal">
-			<script type="text/ng-template" id="allVarsContent">
-				<div class="modal-header">
-					<h3 class="modal-title">I'm a modal!</h3>
-				</div>
-				<div class="modal-body">
-					<ul>
-						<li ng-repeat="item in items">
-							<a href="#" ng-click="$event.preventDefault(); selected.item = item; ok();">{{ item }}</a>
-						</li>
-					</ul>
-					<!--Selected: <b>{{ selected.item }}</b>-->
-				</div>
-				<!--<div class="modal-footer">-->
-					<!--<button class="btn btn-primary" type="button" ng-click="ok()">OK</button>-->
-					<!--<button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>-->
-				<!--</div>-->
-			</script>
-
-			<button type="button" class="btn btn-default" ng-click="open()">modal</button>
-			<div ng-show="selected">Selection from a modal: {{ selected }}</div>
-		</div>
-
 		<!-- javascript -->
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular-animate.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-animate.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.3/ui-bootstrap.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.3/ui-bootstrap-tpls.js"></script>
 		<script>
@@ -111,17 +103,18 @@
 				Show all variables
 				https://angular-ui.github.io/bootstrap/ -> Modal
 			 */
+			/* #todo change url for different vars */
+			angular.module('allItemsApp', ['ngAnimate', 'ui.bootstrap']);
+			angular.module('allItemsApp').controller('allItemsCtrl', function ($scope, $modal, $log) {
 
-			angular.module('allVarsModule', ['ngAnimate', 'ui.bootstrap']);
+				$scope.items = ['var0', 'var1', 'var2', 'var3', 'var4', 'var5', 'var6', 'var7', 'var8', 'var9', 'var10', 'var11', 'var12', 'var13', 'var14', 'var15', 'var16', 'var17', 'var18', 'var19', 'var20', 'var21', 'var22', 'var23', 'var24', 'var25', 'var26', 'var27', 'var28', 'var29', 'var30', 'var31', 'var32', 'var33', 'var34', 'var35', 'var36', 'var37', 'var38', 'var39', 'var40', 'var41', 'var42', 'var43', 'var44', 'var45', 'var46', 'var47', 'var48', 'var49', 'var50', 'var51', 'var52', 'var53', 'var54', 'var55', 'var56', 'var57', 'var58', 'var59', 'var60', 'var61', 'var62', 'var63', 'var64', 'var65', 'var66', 'var67', 'var68', 'var69', 'var70', 'var71', 'var72', 'var73', 'var74', 'var75', 'var76', 'var77', 'var78', 'var79', 'var80', 'var81', 'var82', 'var83', 'var84', 'var85', 'var86', 'var87', 'var88', 'var89', 'var90', 'var91', 'var92', 'var93', 'var94', 'var95', 'var96', 'var97', 'var98', 'var99'];  //#todo
 
-			angular.module('allVarsModule').controller('allVarsModal', function ($scope, $modal, $log) {
-				// todo: get from api
-				$scope.items = ['item1', 'item2', 'item3', 'exp()'];
 				$scope.open = function () {
+
 					var modalInstance = $modal.open({
 						animation: true,
-						templateUrl: 'allVarsContent',
-						controller: 'allVarsInstModal',
+						templateUrl: 'allItemsContent',
+						controller: 'allItemsInstanceCtrl',
 						size: 'lg',
 						resolve: {
 							items: function () {
@@ -129,13 +122,21 @@
 							}
 						}
 					});
+
 					modalInstance.result.then(function (selectedItem) {
 						$scope.selected = selectedItem;
+					}, function () {
+						$log.info('Modal dismissed at: ' + new Date());
 					});
 				};
+
+				$scope.toggleAnimation = function () {
+					$scope.animationsEnabled = !$scope.animationsEnabled;
+				};
+
 			});
 
-			angular.module('allVarsModule').controller('allVarsInstModal', function ($scope, $modalInstance, items) {
+			angular.module('allItemsApp').controller('allItemsInstanceCtrl', function ($scope, $modalInstance, items) {
 
 				$scope.items = items;
 				$scope.selected = {
@@ -145,45 +146,10 @@
 				$scope.ok = function () {
 					$modalInstance.close($scope.selected.item);
 				};
-
-//				$scope.cancel = function () {
-//					$modalInstance.dismiss('cancel');
-//				};
-			});
-
-			/*
-				Info dialogue
-			 */
-			angular.module('infoModule', ['ngAnimate', 'ui.bootstrap']);
-
-			angular.module('infoModule').controller('allVarsModal', function ($scope, $modal, $log) {
-				$scope.open = function () {
-					var modalInstance = $modal.open({
-						animation: true,
-						templateUrl: 'infoContent',
-						controller: 'infoInstModal',
-						size: 'md'
-					});
-					modalInstance.result.then(function (selectedItem) {
-						$scope.selected = selectedItem;
-					});
-				};
-			});
-
-			angular.module('infoModule').controller('infoInstModal', function ($scope, $modalInstance, items) {
-				$scope.ok = function () {
-					$modalInstance.close($scope.selected.item);
-				};
 			});
 		</script>
 
 	</body>
 </html>
 
-<!--
-	minimal html5 tmeplate
-		http://www.sitepoint.com/a-minimal-html-document-html5-edition/
-	angular + bootstrap
-		https://scotch.io/tutorials/how-to-correctly-use-bootstrapjs-and-angularjs-together
 
--->
