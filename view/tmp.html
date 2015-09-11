@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Data Cleaner</title>
+		<link rel="stylesheet" href="https://bootswatch.com/simplex/bootstrap.min.css">
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css"> -->
+		<style>
+			.nav, .pagination, .carousel, .panel-title a
+			{
+				/* needed by http://angular-ui.github.io/bootstrap/ */
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<nav class="navbar navbar-default">
+				<div class="container-fluid">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+							<span class="sr-only">Toggle navigation</span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+							<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="/">Data Cleaner</a>
+					</div>
+
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<ul class="nav navbar-nav">
+						<li><a href="#"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> All</a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-triangle-left" aria-hidden="true"></span> PrevName</a></li>
+						<li class="active"><a href="#"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span> CurName <span class="sr-only">(current)</span></a></li>
+						<li><a href="#"><span class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span> NextName</a></li>
+					</ul>
+					<form class="navbar-form navbar-left" role="search">
+						<div class="input-group">
+							<input type="text" class="form-control" placeholder="Variable...">
+							<span class="input-group-btn">
+								<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+							</span>
+						</div>
+					</form>
+				</div><!-- /.container-fluid -->
+			</nav>
+		</div>
+
+		<div class="container" id="finance_app" ng-app="finance" ng-controller="finance_controller">
+
+			<!-- buttons -->
+			<h2>Buttons</h2>
+			<div class="btn-group" data-toggle="buttons">
+				<label class="btn btn-primary" ng-model="bigData.breakfast" btn-checkbox>
+				Breakfast
+				</label>
+				<label class="btn btn-primary" ng-model="bigData.lunch" btn-checkbox>
+				Lunch
+				</label>
+				<label class="btn btn-primary" ng-model="bigData.dinner" btn-checkbox>
+				Dinner
+				</label>
+			</div>
+
+			<pre><code>{{ bigData | json }}</code></pre>
+
+			<!-- collapse -->
+			<h2>Collapse</h2>
+			<a href="#" class="btn btn-primary" ng-click="isCollapsed = !isCollapsed">
+				Toggle Panel
+			</a>
+
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a href="#" ng-click="isCollapsed = !isCollapsed">
+							Collapsible Group Item #1
+						</a>
+					</h4>
+				</div>
+				<div collapse="isCollapsed">
+					<div class="panel-body">
+						Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+					</div>
+				</div>
+			</div>
+
+			<pre><code>{{ isCollapsed }}</code></pre>
+
+		<!-- new app -> not anymore, merged -->
+
+			<h4>Pages</h4>
+
+			<pagination boundary-links="true" total-items="totalItems" ng-model="currentPage" items-per-page="20" max-size="9"
+			class="pagination-sm" previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"></pagination>
+
+			<pre><code>{{ currentPage }} / {{ totalItems }}</code></pre>
+
+		</div>
+
+		<!-- javascript -->
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular-animate.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.3/ui-bootstrap.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.3/ui-bootstrap-tpls.js"></script>
+		<script>
+			var navApp = angular.module('navApp', ['ui.bootstrap']);
+
+			function NavBarCtrl($scope) {
+			    $scope.isCollapsed = true;
+			}
+
+			//angular.module('app', ['ui.bootstrap'])
+			//.controller('mainController', function($scope) {
+
+				// BUTTONS ======================
+
+				// define some random object
+			//	$scope.bigData = {};
+
+			//	$scope.bigData.breakfast = false;
+			//	$scope.bigData.lunch = false;
+			//	$scope.bigData.dinner = false;
+
+				// COLLAPSE =====================
+			//	$scope.isCollapsed = false;
+
+			//});
+
+			var app = angular.module('finance', ['ngAnimate', 'ui.bootstrap'])
+			app.controller('finance_controller', function ($scope, $log) {
+				$scope.bigData = {};
+
+				$scope.bigData.breakfast = false;
+				$scope.bigData.lunch = false;
+				$scope.bigData.dinner = false;
+
+				$scope.isCollapsed = false;
+
+				/////
+
+				$scope.totalItems = 200;
+				$scope.currentPage = 4;
+
+				$scope.setPage = function (pageNo) {
+					$scope.currentPage = pageNo;
+				};
+
+				$scope.pageChanged = function() {
+					$log.log('Page changed to: ' + $scope.currentPage);
+				};
+
+				//$scope.maxSize = 5;
+				//$scope.bigTotalItems = 175;
+				//$scope.bigCurrentPage = 1;
+			});
+			/* Always bootstrap the apps after the first; they aren't autoloaded. */
+			//angular.bootstrap(document.getElementById("finance_app"), ['finance']);
+
+			//$locationProvider.html5Mode(true);
+		</script>
+
+	</body>
+</html>
+
+<!--
+	minimal html5 tmeplate
+		http://www.sitepoint.com/a-minimal-html-document-html5-edition/
+	angular + bootstrap
+		https://scotch.io/tutorials/how-to-correctly-use-bootstrapjs-and-angularjs-together
+
+-->
