@@ -10,14 +10,14 @@ class Scale01(BaseTransform):
 	options = []
 
 	def learn(self, row):
-		self.params['mean'] = row.mean()
-		self.params['std'] = row.std()  # already does mean-centering
+		self.params['min'] = row.min()
+		self.params['range'] = row.max() - self.params['min']
 
 	def do(self, row):
-		if not ('mean' in self.params and 'std' in self.params):
+		if not ('min' in self.params and 'range' in self.params):
 			raise self.NotInitialized()
 		if issubclass(row.dtype.type, integer):
 			row = row.astype(float)
-		return row - self.params['mean']
+		return (row - self.params['min']) / self.params['range']
 
 

@@ -8,11 +8,12 @@ from collections import OrderedDict
 from os import close
 from sys import stdout, stderr
 from tempfile import mkstemp
-from numpy import load as numpy_load, copy
+from numpy import load as numpy_load, save as numpy_save
 from json import load as json_load
 from os.path import exists
 from controller.apply_transforms import train_transforms, apply_transforms
-from controller.load_transforms import load_operations, load_chain, save_chain
+from controller.data_io import get_cols, get_array
+from controller.transform_io import load_operations, load_chain, save_chain, save_operations
 
 parser = ArgumentParser(description = 'Reads operations from a json file and applies them to data row-by-row.')
 parser.add_argument('-w', '--interface', dest = 'interface', action = 'store_true', help = 'Start the web interface server.')
@@ -26,7 +27,7 @@ parser.add_argument('-l', '--limit', dest = 'limit', action= 'store', type = int
 parser.add_argument('-c', '--cache', dest = 'cache', action = 'count', default = 0, help = 'Increase caching (through files in temporary folder).')
 parser.add_argument('--transpose', dest = 'transpose', action = 'store_true', help = 'Transpose input (to make sure that the variables are the second dimension of input data).')
 parser.add_argument('-f', '--learn', dest = 'learn', action = 'store_true', help = 'Learn the operations in the transformations file on the input data. Also available through the interface.')
-parser.add_argument('-d', '--do', dest = 'do', action = 'store_true', help = 'Apply the operations in the transfomrations file on the input data. If --learn is specified, it happens before applying transformations.  Also available through the interface.')
+parser.add_argument('-d', '--do', dest = 'do', action = 'store_true', help = 'Apply the operations in the transformations file on the input data. If --learn is specified, it happens before applying transformations.  Also available through the interface.')
 #parser.add_argument('-s', '--save', dest = 'save', action = 'store_true', help = 'Save the data to --data_out after transformation (--do). Also available through the interface.')
 
 
@@ -110,38 +111,26 @@ if not args.learn and not args.do and not args.interface:
 	stdout.write('no operations requested and no interface opened; nothing to do (see --help, specifically --interface and --learn/--do)\n')
 	exit(0)
 
-""" Convert data to row dict """
-columns = OrderedDict()
-for k, name in enumerate(var_names):
-	columns[name] = copy(raw[:, k])
-for name in transformations.keys():
-	if name not in columns:
-		columns[name] = None
+columns = get_cols(raw, var_names)
 del raw
 
 if args.learn:
+	stdout.write('learning parameters for transformations from {0:d} columns\n'.format(len(columns)))
 	transformations = train_transforms(transformations, columns)
-	print(args.trans_out)
-	print(save_chain(config, transformations))
-	#todo: save new conf
+	stdout.write('saving transformations to "{0:s}"\n'.format(args.trans_out))
+	opsstr = save_chain(config, transformations)
+	save_operations(opsstr, args.trans_out)
 
 if args.do:
-	apply_transforms()
+	stdout.write('applying transformations to {0:d} columns\n'.format(len(columns)))
+	columns = apply_transforms(transformations, columns)
+	stdout.write('saving transformed data to "{0:s}"\n'.format(args.data_out))
+	data, names = get_array(columns)
+	numpy_save(args.data_out, data)
 
+if args.interface:
+	print('laaaateeeer')
 
-# parser.add_argument('-w', '--interface', dest = 'interface', action = 'store_true', help = 'Start the web interface server.')
-# parser.add_argument('-f', '--learn', dest = 'learn', action = 'store_true', help = 'Learn the operations in the transformations file on the input data. Also available through the interface.')
-# parser.add_argument('-d', '--do', dest = 'do', action = 'store_true', help = 'Apply the operations in the transfomrations file on the input data. If --learn is specified, it happens before applying transformations.  Also available through the interface.')
-
-
-
-#print(raw.shape, raw.dtype)
-
-#print(config['input_vars'])
-#print(chain)
-
-if args.var_names and args.make_names:
-	print('problem!')
-#print(args)
+stdout.write('done\n')
 
 

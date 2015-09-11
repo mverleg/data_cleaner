@@ -1,7 +1,7 @@
 
 from collections import OrderedDict
 from json import load, dump, dumps
-from misc import load_cls
+from controller.base_transform import BaseTransform
 
 
 def load_operations(path):
@@ -9,9 +9,9 @@ def load_operations(path):
 		return load(fh, object_pairs_hook = OrderedDict)
 
 
-def save_operations(operations, path):
+def save_operations(operations, path, indent = 2):
 	with open(path, 'w+') as fh:
-		return dump(operations, fh, sort_keys = False)
+		return dump(operations, fh, indent = indent, sort_keys = False)
 
 
 def load_chain(ops):
@@ -30,15 +30,10 @@ def load_chain(ops):
 			continue
 		chain[name] = []
 		for tnr, transform in enumerate(rops):
-			assert 'transformation' in transform, 'No transformation specified for column "{0:s}" transformation {1:d}'.format(name, tnr + 1)
-			Trns = load_cls(transform['transformation'])
-			trns = Trns()
-			if 'conf' in transform:
-				trns.set_conf(transform['conf'])
-			else:
-				print('No configuration options specified for column "{0:s}" transformation {1:d}'.format(name, tnr + 1))
-			if 'params' in transform:
-				trns.set_params(transform['params'])
+			try:
+				trns = BaseTransform.from_json(transform)
+			except AssertionError as err:
+				raise IOError('Problem for columns "{0:s}", transformation {1:d}: "{2:s}"'.format(name, tnr + 1, str(err)))
 			chain[name].append(trns)
 	return config, chain
 
@@ -53,8 +48,9 @@ def save_chain(config, chain):
 	"""
 	di = OrderedDict()
 	di['__config__'] = config
-	for key, value in chain.items():
-		di[key] = value
-	return dumps(di, indent = 2)
+	for key, ops in chain.items():
+		di[key] = [op.to_json() for op in ops]
+	return di
+	#return dumps(di, indent = 2)
 
 

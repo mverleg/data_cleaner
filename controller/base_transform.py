@@ -1,5 +1,7 @@
 
 from copy import deepcopy
+from collections import OrderedDict
+from misc import load_cls
 
 
 class BaseTransform():
@@ -83,5 +85,37 @@ class BaseTransform():
 			There is less error checking here than for configuration, since this data is supposed to come directly from this class.
 		"""
 		self.params = deepcopy(input)
+
+	def to_json(self):
+		"""
+			An encoder, converting this instance to JSON-able primary types.
+
+			:return: A dictionary representing this instance.
+		"""
+		pypath = '{0:s}.{1:s}'.format(self.__class__.__module__, self.__class__.__name__)
+		return OrderedDict([
+			('transformation', pypath),
+			('conf', self.get_conf()),
+			('params', self.get_params()),
+		])
+
+	@classmethod
+	def from_json(cls, di):
+		"""
+			A constructor/decoder to create instances from primary types (JSON-serializable ones), as created by to_json().
+
+			:param str: A dictionary representing the transform instance.
+			:return: An instance of the appropriate transform with the loaded attributes.
+		"""
+		for key in di.keys():
+			assert key in ('transformation', 'conf', 'params',), 'unknown transform property {0:s}'.format(key)
+		assert 'transformation' in di, 'type of transformation not found (should have \'transformation\': pythonpath)'
+		Trns = load_cls(di['transformation'])
+		trns = Trns()
+		if 'conf' in di:
+			trns.set_conf(di['conf'])
+		if 'params' in di:
+			trns.set_params(di['params'])
+		return trns
 
 

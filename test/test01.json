@@ -1,6 +1,10 @@
 {
   "__config__": {
-    "input_vars": ["Norm", "int", "exp()"]
+    "input_vars": [
+      "Norm",
+      "int",
+      "exp()"
+    ]
   },
   "Norm": [
     {
@@ -21,9 +25,12 @@
   ],
   "int": [
     {
-      "transformation": "transforms.scale01.Scale01",
+      "transformation": "transforms.autoscale.AutoScale",
       "conf": {},
-      "params": {}
+      "params": {
+        "mean": 29.7,
+        "std": 41.2
+      }
     }
   ]
 }

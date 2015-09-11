@@ -1,25 +1,39 @@
 
+from collections import OrderedDict
+from numpy import copy
 
-def apply_transforms(operations, columns):
+
+def apply_transforms(operations, columns, in_place = False):
 	"""
 		Apply a chain of transformations to the data.
 	"""
+	if in_place:
+		converted = columns
+	else:
+		converted = OrderedDict()
 	for name, ops in operations.items():
 		try:
-			col = columns[name]
-		except ValueError:
-			raise ValueError('row key "{0:s}" is not an integer'.format(name))
+			if in_place:
+				col = columns[name]
+			else:
+				col = copy(columns[name])
 		except IndexError:
+			""" Making a new column """
 			col = None
-			#todo: maybe we're trying to make a new column?
-		refshape = col.shape
+		ref_shape = col.shape
 		for op in ops:
 			try:
 				col = op.do(col)
 			except op.NotInitialized as err:
 				raise op.NotInitialized('"{0:s}" for row {1:} did not learn parameters yet; use .learn(row) first {2:}'.format(str(op), name, str(err)))
-			assert col.shape == refshape, 'Operation "{0:s}" changed the shape from {1:} to {2:}, which is not allowed'.format(str(op, col.shape, refshape))
-	return columns
+			except AssertionError as err:
+				raise op.NotInitialized('"{0:s}" for row {1:} encountered a problem: {2:}'.format(str(op), name, str(err)))
+			assert col.shape == ref_shape, 'Operation "{0:s}" changed the shape from {1:} to {2:}, which is not allowed'.format(str(op, col.shape, ref_shape))
+		converted[name] = col
+	for name, col in columns.items():
+		if name not in converted:
+			converted[name] = col
+	return converted
 
 
 def train_transforms(operations, columns):

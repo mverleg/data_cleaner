@@ -1,7 +1,7 @@
 
 from numpy import load
 from controller.apply_transforms import apply_transforms, train_transforms
-from controller.load_transforms import load_chain, load_operations
+from controller.transform_io import load_chain, load_operations
 
 
 def test_load_chain():
