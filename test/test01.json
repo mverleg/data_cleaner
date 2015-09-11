@@ -1,5 +1,8 @@
 {
-  "0": [
+  "__config__": {
+    "input_vars": ["Norm", "int", "exp()"]
+  },
+  "Norm": [
     {
       "transformation": "transforms.shift.Shift",
       "conf": {
@@ -16,5 +19,11 @@
       }
     }
   ],
-  "1": []
+  "int": [
+    {
+      "transformation": "transforms.scale01.Scale01",
+      "conf": {},
+      "params": {}
+    }
+  ]
 }
