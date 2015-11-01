@@ -9,7 +9,7 @@ from os import close
 from sys import stdout, stderr
 from tempfile import mkstemp
 from numpy import load as numpy_load, save as numpy_save
-from json import load as json_load
+from commentjson import load as json_load
 from os.path import exists
 from controller.apply_transforms import train_transforms, apply_transforms
 from controller.data_io import get_cols, get_array

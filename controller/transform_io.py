@@ -1,6 +1,6 @@
 
 from collections import OrderedDict
-from json import load, dump, dumps
+from commentjson import load, dump
 from controller.base_transform import BaseTransform
 
 
