@@ -1,0 +1,15 @@
+
+Column-based.
+
+Should see it as a transformation from one data set to another.
+So for N columns, start with N identity transformations.
+These can then just be deleted, replaced or expanded.
+
+An additional feature would be to do one of these:
+- Let transformations have parameters
+- Let transformations have versions with probabilities
+- To just have transformations which can be on/off (from parameter)
+Last one is easiest. The point is to be able to input things by hand first, then use optimization to find the things you couldn't choose easily by hand.
+
+
+
