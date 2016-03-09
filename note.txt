@@ -11,5 +11,7 @@ An additional feature would be to do one of these:
 - To just have transformations which can be on/off (from parameter)
 Last one is easiest. The point is to be able to input things by hand first, then use optimization to find the things you couldn't choose easily by hand.
 
+Some treatment for nominal, ordinal and cardinal data.
+
 
 
