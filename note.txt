@@ -13,5 +13,8 @@ Last one is easiest. The point is to be able to input things by hand first, then
 
 Some treatment for nominal, ordinal and cardinal data.
 
+Some design notes here:
+https://docs.google.com/document/d/1dhGMZUxPO89fB_wWcNj9druPzzATyLJ83MomdRZbGJw/edit?usp=sharing
+On hold due to time restraints and while searching for existing alternatives.
 
 
